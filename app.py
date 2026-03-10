@@ -263,7 +263,7 @@ if st.session_state.results:
     if consolidated_path.exists():
         df_consolidated = pd.read_csv(consolidated_path)
 
-        st.subheader("Summary by Person")
+        st.subheader("Golden Ratio Score")
 
         summary_cols = ["person", "n_images", "n_used", "n_errors", "n_rejected", "shape_guess_mode", "golden_ratio_score_0_100"]
         available_cols = [c for c in summary_cols if c in df_consolidated.columns]
@@ -293,6 +293,7 @@ if st.session_state.results:
 
             st.dataframe(styled, use_container_width=True, hide_index=True)
 
+    st.divider()
     # --- Downloads ---
     st.subheader("⬇️ Download CSVs")
     col1, col2, col3 = st.columns(3)
