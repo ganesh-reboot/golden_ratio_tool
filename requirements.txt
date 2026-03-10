@@ -3,8 +3,6 @@ insightface
 onnxruntime
 tqdm
 numpy
-dlib
-imutils
 mediapipe==0.10.14
 ultralytics
 pandas
