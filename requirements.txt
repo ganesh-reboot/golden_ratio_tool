@@ -1,7 +1,6 @@
 streamlit
 insightface
 onnxruntime
-opencv-python-headless
 tqdm
 numpy
 dlib

@@ -7,3 +7,4 @@ cmake
 libopenblas-dev
 liblapack-dev
 build-essential
+python3-opencv
