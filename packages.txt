@@ -1,0 +1,10 @@
+libgl1
+libglib2.0-0t64
+libsm6
+libxrender1
+libxext6
+cmake
+libopenblas-dev
+liblapack-dev
+build-essential
+python3-opencv

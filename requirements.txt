@@ -6,3 +6,4 @@ numpy
 mediapipe==0.10.14
 ultralytics
 pandas
+opencv-python-headless
