@@ -1,164 +1,3 @@
-# import streamlit as st
-# import tempfile
-# import zipfile
-# from pathlib import Path
-# import time
-# import shutil
-# from insightface_master import run_pipeline
-
-# st.set_page_config(page_title="Facial Metrics Processor", layout="centered")
-
-# st.title("Facial Metrics Processor")
-# st.caption("Upload a dataset ZIP and click Run Analysis.")
-
-# with st.expander("ℹ️ Instructions & Debug Info"):
-#     st.markdown("""
-# ### Expected ZIP Structure
-
-# cip_file -> faces/name1/file_name.jpg, .png, etc
-
-# Requirements:
-# - Each subfolder = one person
-# - All folders must be inside 'faces/'
-
-# Debug Tips:
-# - Make sure ZIP is not nested multiple levels deep
-# - Avoid special characters in folder names
-# - Check terminal logs running Streamlit if errors occur
-# """)
-
-# # --------------------------
-# # Session State
-# # --------------------------
-
-# if "results" not in st.session_state:
-#     st.session_state.results = None
-
-# if "last_uploaded_name" not in st.session_state:
-#     st.session_state.last_uploaded_name = None
-
-# # --------------------------
-# # Upload
-# # --------------------------
-
-# uploaded_zip = st.file_uploader("Upload Dataset ZIP", type=["zip"])
-
-# # Reset results if new file uploaded
-# if uploaded_zip and uploaded_zip.name != st.session_state.last_uploaded_name:
-#     st.session_state.results = None
-#     st.session_state.last_uploaded_name = uploaded_zip.name
-
-# # --------------------------
-# # Run Button (ALWAYS visible when file uploaded)
-# # --------------------------
-
-# if uploaded_zip:
-
-#     if st.button("Run Facial Analysis", use_container_width=True):
-
-#         temp_root = Path(tempfile.mkdtemp())
-#         input_dir = temp_root / "input"
-#         output_dir = temp_root / "output"
-
-#         input_dir.mkdir()
-#         output_dir.mkdir()
-
-#         zip_path = temp_root / "dataset.zip"
-
-#         with open(zip_path, "wb") as f:
-#             f.write(uploaded_zip.read())
-
-#         try:
-#             with zipfile.ZipFile(zip_path, "r") as zip_ref:
-#                 zip_ref.extractall(input_dir)
-#         except zipfile.BadZipFile:
-#             st.error("Invalid ZIP file.")
-#             shutil.rmtree(temp_root)
-#             st.stop()
-
-#         # Locate faces folder
-#         root_for_pipeline = input_dir / "faces"
-
-#         if not root_for_pipeline.exists():
-#             st.error("ZIP must contain a 'faces/' directory.")
-#             shutil.rmtree(temp_root)
-#             st.stop()
-
-#         try:
-#             start = time.time()
-
-#             # 🔥 NO progress, NO spinner, just run
-#             run_pipeline(
-#                 root_path=str(root_for_pipeline),
-#                 outdir=str(output_dir),
-#                 extra_options={
-#                     "det_sizes": "480,640",
-#                     "ctx_id": -1,
-#                     "save_overlays": False
-#                 }
-#             )
-
-#             elapsed = round(time.time() - start, 2)
-
-#             # Store results in memory
-#             st.session_state.results = {
-#                 "output_dir": str(output_dir),
-#                 "time": elapsed
-#             }
-
-#             st.success(f"Processing complete in {elapsed} seconds.")
-
-#         except Exception as e:
-#             st.error(f"Processing failed: {e}")
-#             shutil.rmtree(temp_root)
-#             st.stop()
-
-# # --------------------------
-# # Downloads (DO NOT trigger re-run)
-# # --------------------------
-
-# if st.session_state.results:
-
-#     output_dir = Path(st.session_state.results["output_dir"])
-
-#     consolidated = output_dir / "if_consolidated.csv"
-#     summary = output_dir / "if_summary_by_person.csv"
-#     master = output_dir / "if_master.csv"
-
-#     st.divider()
-#     st.subheader("Download Results")
-
-#     col1, col2, col3 = st.columns(3)
-
-#     if consolidated.exists():
-#         with open(consolidated, "rb") as f:
-#             col1.download_button(
-#                 "Consolidated CSV",
-#                 f,
-#                 file_name="if_consolidated.csv",
-#                 use_container_width=True
-#             )
-
-#     if summary.exists():
-#         with open(summary, "rb") as f:
-#             col2.download_button(
-#                 "Summary CSV",
-#                 f,
-#                 file_name="if_summary_by_person.csv",
-#                 use_container_width=True
-#             )
-
-#     if master.exists():
-#         with open(master, "rb") as f:
-#             col3.download_button(
-#                 "Master CSV",
-#                 f,
-#                 file_name="if_master.csv",
-#                 use_container_width=True
-#             )
-
-
-
 import streamlit as st
 import tempfile
 import zipfile
@@ -168,9 +7,9 @@ import shutil
 import pandas as pd
 from insightface_master import run_pipeline
 
-st.set_page_config(page_title="Facial Metrics Processor", layout="wide")
+st.set_page_config(page_title="Golden Ratio Tool", layout="wide")
 
-st.title("Facial Metrics Processor")
+st.title("Golden Ratio Tool")
 st.caption("Upload a dataset ZIP, configure options in the sidebar, and click Run Analysis.")
 
 # --------------------------
@@ -305,7 +144,6 @@ my_dataset.zip
 
 **Tips:**
 - Avoid special characters in folder names
-- Check terminal logs if errors occur
 """)
 
 # --------------------------
@@ -425,7 +263,7 @@ if st.session_state.results:
     if consolidated_path.exists():
         df_consolidated = pd.read_csv(consolidated_path)
 
-        st.subheader("📊 Summary by Person")
+        st.subheader("Summary by Person")
 
         summary_cols = ["person", "n_images", "n_used", "n_errors", "n_rejected", "shape_guess_mode", "golden_ratio_score_0_100"]
         available_cols = [c for c in summary_cols if c in df_consolidated.columns]
@@ -452,11 +290,6 @@ if st.session_state.results:
                     cmap="RdYlGn",
                     vmin=0, vmax=100
                 )
-            if "n_errors" in df_display.columns:
-                styled = styled.background_gradient(
-                    subset=["n_errors"],
-                    cmap="YlOrRd"
-                )
 
             st.dataframe(styled, use_container_width=True, hide_index=True)
 
@@ -478,7 +311,7 @@ if st.session_state.results:
 
     # --- Full CSV Viewer ---
     st.divider()
-    st.subheader("🔍 Full Data Explorer")
+    st.subheader("🔍 Data Explorer")
 
     tabs_config = []
     if consolidated_path.exists():
