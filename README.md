@@ -1,8 +1,9 @@
-# InsightFace Batch Exporter 🧠✨
+# Golden Ratio Tool
+*Front end based on [Insightface batch exporter](https://github.com/Reboot-Online-Ltd/bald)*
 *GoldenFace-style scoring, robust face landmarks, head pose & quality metrics — at scale.*
 
 ---
-
+## Oringal README
 > **What is this?**  
 > A single-file CLI that scans a folder of people/images, runs InsightFace (with optional MediaPipe + YOLO fallbacks), computes **GoldenFace-style geometry scores**, head pose, and quality metrics, and writes:
 >
