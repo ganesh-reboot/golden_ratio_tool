@@ -545,6 +545,28 @@ if uploaded_zip:
             shutil.rmtree(temp_root)
             st.stop()
 
+        # --- Pre-run validation ---
+        validation_errors = []
+
+        if det_sizes.strip().lower() != "auto":
+            parts = det_sizes.strip().split(",")
+            for part in parts:
+                try:
+                    val = int(part.strip())
+                    if val <= 0:
+                        validation_errors.append(f"Detection sizes: '{part.strip()}' must be a positive integer.")
+                except ValueError:
+                    validation_errors.append(f"Detection sizes: '{part.strip()}' is not a valid integer. Use comma-separated numbers or 'auto'.")
+
+        if anime_weights.strip() and not Path(anime_weights.strip()).exists():
+            validation_errors.append(f"Anime weights: file not found at '{anime_weights.strip()}'.")
+
+        if validation_errors:
+            for err in validation_errors:
+                st.error(f"⚠️ {err}")
+            shutil.rmtree(temp_root)
+            st.stop()
+
         extra_options = {
             "det_sizes": det_sizes,
             "ctx_id": ctx_id,
@@ -576,6 +598,19 @@ if uploaded_zip:
                     extra_options=extra_options
                 )
                 elapsed = round(time.time() - start, 2)
+
+            # --- Post-run checks for silent empty output ---
+            consolidated_check = output_dir / "if_consolidated.csv"
+            if not consolidated_check.exists():
+                st.error("❌ Pipeline completed but produced no output files. Check that your ZIP contains valid images.")
+                shutil.rmtree(temp_root)
+                st.stop()
+
+            df_check = pd.read_csv(consolidated_check)
+            if df_check.empty:
+                st.error("❌ Pipeline ran but found no faces. Possible causes: images have no detectable faces, min detection score is too high, or detection sizes are too small for the faces in your images.")
+                shutil.rmtree(temp_root)
+                st.stop()
 
             # Store checkbox state at run-time so download buttons reflect
             # what was actually generated, not the current sidebar state
