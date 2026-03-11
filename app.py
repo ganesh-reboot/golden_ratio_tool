@@ -112,11 +112,12 @@ with st.sidebar:
         help="Dump per-image landmark/keypoint data as JSON under output_dir/landmarks"
     )
     print_found = False
-    anime_weights = st.text_input(
-        "Anime weights path",
-        value="",
-        help="(Optional) Path to a YOLO anime-face weights .pt file to enable cartoon/anime face fallback detection"
-    )
+    anime_weights = ""
+    # st.text_input(
+    #     "Anime weights path",
+    #     value="",
+    #     help="(Optional) Path to a YOLO anime-face weights .pt file to enable cartoon/anime face fallback detection"
+    # )
 
 # --------------------------
 # Instructions
