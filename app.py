@@ -138,9 +138,6 @@ my_dataset.zip
 - Each subfolder = one person
 - All person folders must be inside `faces/`
 - Supported formats: `.jpg`, `.jpeg`, `.png`
-
-**Tips:**
-- Avoid special characters in folder names
 """)
 
 # --------------------------
